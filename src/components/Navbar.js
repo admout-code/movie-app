@@ -12,11 +12,11 @@ export default function Navbar() {
         setSearch(e.target.value);
     };
     const handleClick = (e) => {
-        setSearch('')
-        if (search === ''){
+        setSearch("");
+        if (search === "") {
             e.preventDefault();
         }
-    }
+    };
 
     const fetchData = async (type) => {
         const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
@@ -40,7 +40,11 @@ export default function Navbar() {
         <Nav>
             <Container>
                 <Dropdown>
-                    <DropdownBtn onMouseEnter={() => setVisible(true)} onMouseLeave={() => setVisible(false)}>
+                    <DropdownBtn
+                        to="/movie"
+                        onMouseEnter={() => setVisible(true)}
+                        onMouseLeave={() => setVisible(false)}
+                    >
                         Movies ⯆
                     </DropdownBtn>
                     <MoviesDropdownContent
@@ -48,6 +52,7 @@ export default function Navbar() {
                         onMouseEnter={() => setVisible(true)}
                         onMouseLeave={() => setVisible(false)}
                     >
+                        <Link to={"/trendings/movie"}>Trendings</Link>
                         {movieGenres.map((genre) => (
                             <Link to={`/discover/movie/${genre.id}`} key={genre.id}>
                                 {genre.name}
@@ -56,7 +61,7 @@ export default function Navbar() {
                     </MoviesDropdownContent>
                 </Dropdown>
                 <Dropdown>
-                    <DropdownBtn onMouseEnter={() => setVisible(true)} onMouseLeave={() => setVisible(false)}>
+                    <DropdownBtn to="/tv" onMouseEnter={() => setVisible(true)} onMouseLeave={() => setVisible(false)}>
                         Series ⯆
                     </DropdownBtn>
                     <SeriesDropdownContent
@@ -64,6 +69,7 @@ export default function Navbar() {
                         onMouseEnter={() => setVisible(true)}
                         onMouseLeave={() => setVisible(false)}
                     >
+                        <Link to={"/trendings/tv"}>Trendings</Link>
                         {tvGenres.map((genre) => (
                             <Link to={`/discover/tv/${genre.id}`} key={genre.id}>
                                 {genre.name}
@@ -77,17 +83,19 @@ export default function Navbar() {
             </Home>
             <SearchBar>
                 <input type="text" onChange={handleChange} value={search} />
-                <SearchButton to={`/search&q=${search}`} onClick={handleClick}>Search</SearchButton>
+                <SearchButton to={`/search&q=${search}`} onClick={handleClick}>
+                    Search
+                </SearchButton>
             </SearchBar>
-        </Nav> 
+        </Nav>
     );
 }
 
 const SearchButton = styled(Link)`
     text-decoration: none;
     color: black;
-    background-color:white;
-`
+    background-color: white;
+`;
 
 const StyledLink = styled(Link)`
     text-decoration: none;
@@ -131,7 +139,7 @@ const Dropdown = styled.div`
     transition: all ease-in-out 0.1s;
 `;
 
-const DropdownBtn = styled.span`
+const DropdownBtn = styled(Link)`
     border: none;
     color: white;
     background: none;

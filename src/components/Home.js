@@ -4,18 +4,19 @@ import ShowCard from "./ShowCard";
 
 const options = [
     { value: "popularity.desc", text: "popularity" },
-    { value: "release.date", text: "release date" },
+    { value: "release.date.asc", text: "release date" },
     { value: "vote_average.desc", text: "vote average" },
 ];
 
 export default function ShowsDiscover() {
-    const { id, type } = useParams();
     const [shows, setShows] = useState(undefined);
     const [sortby, setSortby] = useState(options[0].value);
+    const {type} = useParams();
+    const showType = type || 'movie';
 
     const fetchData = async () => {
         const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
-        const url = `https://api.themoviedb.org/3/discover/${type}?api_key=${API_KEY}&language=en-US&sort_by=${sortby}&include_adult=false&include_video=false&page=1&with_genres=${id}`;
+        const url = `https://api.themoviedb.org/3/discover/${showType}?api_key=${API_KEY}&language=en-US&sort_by=${sortby}&include_adult=false&include_video=false&page=1`;
         try {
             const response = await fetch(url);
             const data = await response.json();
@@ -31,7 +32,7 @@ export default function ShowsDiscover() {
 
     useEffect(() => {
         fetchData();
-    }, [type, id, sortby]);
+    }, [showType, sortby]);
 
     if (!shows) return <div>loading...</div>;
 
