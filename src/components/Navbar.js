@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import Homepage from "./Homepage";
 
 export default function Navbar() {
     const [visible, setVisible] = useState(false);
@@ -9,13 +8,15 @@ export default function Navbar() {
     const [movieGenres, setMovieGenres] = useState([]);
     const [tvGenres, setTvGenres] = useState([]);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-    };
-
     const handleChange = (e) => {
         setSearch(e.target.value);
     };
+    const handleClick = (e) => {
+        setSearch('')
+        if (search === ''){
+            e.preventDefault();
+        }
+    }
 
     const fetchData = async (type) => {
         const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
@@ -72,19 +73,42 @@ export default function Navbar() {
                 </Dropdown>
             </Container>
             <Home>
-                <Link to="/">Homepage</Link>
+                <StyledLink to="/">Homepage</StyledLink>
             </Home>
             <SearchBar>
-                <form onSubmit={handleSubmit}>
-                    <input type="text" onChange={handleChange} value={search} />
-                    <button type="submit">Search</button>
-                </form>
+                <input type="text" onChange={handleChange} value={search} />
+                <SearchButton to={`/search&q=${search}`} onClick={handleClick}>Search</SearchButton>
             </SearchBar>
-        </Nav>
+        </Nav> 
     );
 }
 
-const Home = styled.button``;
+const SearchButton = styled(Link)`
+    text-decoration: none;
+    color: black;
+    background-color:white;
+`
+
+const StyledLink = styled(Link)`
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    & :visited {
+        text-decoration: none;
+        color: white;
+    }
+`;
+
+const Home = styled.span`
+    /* text-decoration: none;
+    color: white;
+    cursor: pointer;
+    & :visited {
+        text-decoration: none;
+        color: white;
+    } */
+`;
+
 const Nav = styled.nav`
     display: flex;
     background-color: rgba(0, 0, 0, 0.801);
@@ -101,21 +125,18 @@ const Container = styled.div`
     justify-content: center;
 `;
 
-const NavButtons = styled.span`
-    padding: 1rem;
-`;
-
 const Dropdown = styled.div`
     position: relative;
     display: inline-block;
     transition: all ease-in-out 0.1s;
 `;
 
-const DropdownBtn = styled.button`
+const DropdownBtn = styled.span`
     border: none;
     color: white;
     background: none;
-    cursor: default;
+    cursor: pointer;
+    margin: 0.5rem;
 `;
 
 const MoviesDropdownContent = styled.div`

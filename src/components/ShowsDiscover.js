@@ -38,12 +38,12 @@ export default function MovieGenre() {
     return (
         <div>
             <select onChange={handleChange} name="" id="">
-                {options.map((option) => (
-                    <option value={option.value}>{option.text}</option>
+                {options.map((option, index) => (
+                    <option key={index} value={option.value}>{option.text}</option>
                 ))}
             </select>
             {shows.map((show) => (
-                <ShowCard title={show.title || show.name} imgUrl={show.poster_path} id={show.id} key={show.id} />
+                <ShowCard title={show.title || show.name} imgUrl={show.poster_path} id={show.id} key={show.id} type={show.title ? "movie" : "tv"}/>
             ))}
         </div>
     );

@@ -28,14 +28,14 @@ export default function Homepage() {
             <div>
                 <h1>Trending Movies</h1>
                 {trendingMovies.map((movie) => (
-                    <ShowCard title={movie.title} imgUrl={movie.poster_path} id={movie.id} key={movie.id} />
+                    <ShowCard title={movie.title} imgUrl={movie.poster_path} id={movie.id} key={movie.id} type="movie"/>
                 ))}
             </div>
 
             <div>
                 <h1>Trending Series</h1>
                 {trendingSeries.map((tv) => (
-                    <ShowCard title={tv.name} imgUrl={tv.poster_path} id={tv.id} key={tv.id} />
+                    <ShowCard title={tv.name} imgUrl={tv.poster_path} id={tv.id} key={tv.id} type="tv"/>
                 ))}
             </div>
         </div>
