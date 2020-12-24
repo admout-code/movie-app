@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import logo from "../images/gnomi_tv.png";
+import { DropdownButton, Dropdown } from "react-bootstrap";
 
 export default function Navbar() {
-    const [visible, setVisible] = useState(false);
     const [search, setSearch] = useState("");
     const [movieGenres, setMovieGenres] = useState([]);
     const [tvGenres, setTvGenres] = useState([]);
@@ -38,135 +39,140 @@ export default function Navbar() {
 
     return (
         <Nav>
-            <Container>
-                <Dropdown>
-                    <DropdownBtn
-                        to="/movie"
-                        onMouseEnter={() => setVisible(true)}
-                        onMouseLeave={() => setVisible(false)}
-                    >
-                        Movies ⯆
-                    </DropdownBtn>
-                    <MoviesDropdownContent
-                        visible={visible}
-                        onMouseEnter={() => setVisible(true)}
-                        onMouseLeave={() => setVisible(false)}
-                    >
-                        <Link to={"/trendings/movie"}>Trendings</Link>
-                        {movieGenres.map((genre) => (
-                            <Link to={`/discover/movie/${genre.id}`} key={genre.id}>
-                                {genre.name}
-                            </Link>
-                        ))}
-                    </MoviesDropdownContent>
-                </Dropdown>
-                <Dropdown>
-                    <DropdownBtn to="/tv" onMouseEnter={() => setVisible(true)} onMouseLeave={() => setVisible(false)}>
-                        Series ⯆
-                    </DropdownBtn>
-                    <SeriesDropdownContent
-                        visible={visible}
-                        onMouseEnter={() => setVisible(true)}
-                        onMouseLeave={() => setVisible(false)}
-                    >
-                        <Link to={"/trendings/tv"}>Trendings</Link>
-                        {tvGenres.map((genre) => (
-                            <Link to={`/discover/tv/${genre.id}`} key={genre.id}>
-                                {genre.name}
-                            </Link>
-                        ))}
-                    </SeriesDropdownContent>
-                </Dropdown>
-            </Container>
-            <Home>
-                <StyledLink to="/">Homepage</StyledLink>
-            </Home>
-            <SearchBar>
-                <input type="text" onChange={handleChange} value={search} />
+            <TypeButtons>
+                    <Button to="/movie">Movies</Button>
+                    <DropdownButton variant="outline-light" id="dropdown-item-button">
+                        <Dropdown.Item><DropdownItems to={"/trendings/movie"}>Trendings</DropdownItems></Dropdown.Item>
+                            <Dropdown.Divider />
+                            {movieGenres.map((genre) => (
+                                <Dropdown.Item eventKey={genre.id} key={genre.id}>
+                                    <DropdownItems to={`/discover/movie/${genre.id}`}>{genre.name}</DropdownItems>
+                                </Dropdown.Item>
+                            ))}
+                    </DropdownButton>
+
+                    <Button to="/tv">Series</Button>
+                    <DropdownButton variant="outline-light" id="dropdown-item-button">
+                        <Dropdown.Item><DropdownItems to={"/trendings/tv"}>Trendings</DropdownItems></Dropdown.Item>
+                            <Dropdown.Divider />
+                            {tvGenres.map((genre) => (
+                                <Dropdown.Item variant="light" eventKey={genre.id} key={genre.id}>
+                                    <DropdownItems to={`/discover/tv/${genre.id}`}>{genre.name}</DropdownItems>
+                                </Dropdown.Item>
+                            ))}
+                    </DropdownButton>
+                </TypeButtons>
+            <HomepageBtn to="/">
+                <Logo src={logo} alt="Homepage-button" />
+            </HomepageBtn>
+            <Search>
+                <Input type="text" onChange={handleChange} value={search} />
                 <SearchButton to={`/search&q=${search}`} onClick={handleClick}>
                     Search
                 </SearchButton>
-            </SearchBar>
+            </Search>
         </Nav>
     );
 }
 
-const SearchButton = styled(Link)`
-    text-decoration: none;
+// Styles
+const TypeButtons = styled.div`
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+`
+const DropdownItems = styled(Link)`
     color: black;
-    background-color: white;
+    &:hover {
+        text-decoration: none;
+    }
+    &:active {
+        /* background-color: red; */
+        color: black;
+    }
+`
+const Button = styled(Link)`
+    background-color: rgba(255, 255, 255, 0);
+    color: #ffffff;
+    font-size: 1.5rem;
+    text-decoration: none;
+    height: 2.4rem;
+    border-radius: 5px;
+    width: 6rem;
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+        transition: all 0.1s ease-in-out;
+        text-decoration: none;
+        transition: all 0.1s ease-ease-in-out;
+        background-color: white;
+        color: black;
+    }
+`
+const Search = styled.div`
+    display: flex;
+    justify-content: flex-end;
 `;
-
-const StyledLink = styled(Link)`
+const Input = styled.input`
+    font-size: 1.5rem;
+    width: 15rem;
+    height: 2.5rem;
+    border: 0;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0);
+    border: solid 2px white;
+    outline: none;
+    transition: ease-in-out all 0.2s;
+    &:hover,
+    &:focus {
+        background-color: white;
+        transition: ease-in-out all 0.2s;
+    }
+`;
+const SearchButton = styled(Link)`
+    font-size: 1.65rem;
+    text-decoration: none;
+    color: white;
+    background-color: rgba(255, 255, 255, 0);
+    margin-right: 0.5rem;
+    margin-left: 0.3rem;
+    border-radius: 5px;
+    transition: ease-in-out all 0.1s;
+    &:active,
+    &:hover {
+        transition: ease-in-out all 0.1s;
+        background-color: white;
+        color: black;
+        text-decoration: none;
+    }
+`;
+const Logo = styled.img`
+    width: 20rem;
+`;
+const HomepageBtn = styled(Link)`
     text-decoration: none;
     color: white;
     cursor: pointer;
-    & :visited {
+    margin-left: 3.8rem;
+    display: flex;
+    justify-content: center;
+    &:visited {
         text-decoration: none;
         color: white;
     }
 `;
-
-const Home = styled.span`
-    /* text-decoration: none;
-    color: white;
-    cursor: pointer;
-    & :visited {
-        text-decoration: none;
-        color: white;
-    } */
-`;
-
 const Nav = styled.nav`
     display: flex;
-    background-color: rgba(0, 0, 0, 0.801);
+    background-color: rgba(0, 0, 0, 0.835);
     color: white;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-`;
-
-const Container = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-`;
-
-const Dropdown = styled.div`
-    position: relative;
-    display: inline-block;
-    transition: all ease-in-out 0.1s;
-`;
-
-const DropdownBtn = styled(Link)`
-    border: none;
-    color: white;
-    background: none;
-    cursor: pointer;
-    margin: 0.5rem;
-`;
-
-const MoviesDropdownContent = styled.div`
-    transition: all ease-in-out 1s;
-    display: ${({ visible }) => (visible ? "flex" : "none")};
-    position: absolute;
-    flex-direction: column;
-    /* min-width: 160px; */
+    top: 0%;
+    height: 4rem;
+    position: fixed;
+    width: 100%;
     z-index: 1;
-    background-color: lightblue;
-    margin-top: -0.05rem;
 `;
-
-const SeriesDropdownContent = styled.div`
-    transition: all ease-in-out 1s;
-    display: ${({ visible }) => (visible ? "flex" : "none")};
-    position: absolute;
-    flex-direction: column;
-    /* min-width: 160px; */
-    z-index: 1;
-    background-color: lightblue;
-    margin-top: -0.05rem;
-`;
-
-const SearchBar = styled.div``;
