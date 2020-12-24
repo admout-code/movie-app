@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from "react";
-import ShowCard from "./ShowCard";
+import React, { useEffect, useMemo, useReducer } from "react";
+// import ShowCard from "./ShowCard";
 import { useParams } from "react-router-dom";
+import styled from "styled-components";
+import Loading from "./Loading";
+import ShowList from "./ShowList";
+import { showsReducer, initialState } from "./reducers";
 
 export default function Trendings() {
-    const [trendings, setTrendings] = useState([]);
     const { type } = useParams();
-    // const [showType, setShowType] = useState("");
+
+    const [state, dispatch] = useReducer(showsReducer, initialState);
+    const { shows, loading, error } = state;
 
     const fetchData = async () => {
         const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
@@ -13,48 +18,39 @@ export default function Trendings() {
         try {
             let response = await fetch(url);
             const data = await response.json();
-            setTrendings(data.results);
-            // console.log(trendings)
+            if (data.results) dispatch({ type: "FETCH_SUCCESSFUL", payload: data.results });
+            else dispatch({ type: "FETCH_FAILED", payload: "An error occurred" });
         } catch (error) {
-            console.log(error);
+            dispatch({ type: "FETCH_FAILED", payload: error });
         }
     };
 
+    const trendingShows = shows.filter((show) => show.media_type === type); // TODO Wrap this in useMemo
+
+    const showType = useMemo(() => (type === "movie" ? "Movies" : "Series"), [type]);
+
     useEffect(() => {
+        dispatch({ type: "FETCH_STATED" });
         fetchData();
     }, [type]);
 
-    // console.log(type);
-    const trendingShows = trendings.filter((show) => show.media_type === type);
-    // const trendingSeries = trendings.filter((show) => show.media_type === "tv");
-    
-    let showType = ''
-    if (type === "movie") showType = "Movies";
-    else showType = "Series";
-    // if (type === "movie") setShowType("Movies");
-    // else setShowType("Series");
+    if (!shows || error) return <div>{error}</div>;
+
+    if (loading) return <Loading />;
 
     return (
-        <div>
-            <div>
-                <h1>Trending {showType}</h1>
-                {trendingShows.map((show) => (
-                    <ShowCard
-                        title={show.title || show.name}
-                        imgUrl={show.poster_path}
-                        id={show.id}
-                        type={type}
-                        key={show.id}
-                    />
-                ))}
-            </div>
-
-            {/* <div>
-                <h1>Trending Series</h1>
-                {trendingSeries.map((tv) => (
-                    <ShowCard title={tv.name} imgUrl={tv.poster_path} id={tv.id} key={tv.id} type="tv"/>
-                ))}
-            </div> */}
-        </div>
+        <Container>
+            <h1>Trending {showType}</h1>
+            <ShowList shows={trendingShows} />
+        </Container>
     );
 }
+
+// Styles
+const Container = styled.div`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding: 5rem 2rem 1rem 2rem;
+`;
