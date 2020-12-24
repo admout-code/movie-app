@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ShowCard from './ShowCard'
+import styled from "styled-components";
+import Loading from "./Loading";
+import ShowList from "./ShowList";
 
 export default function Search() {
-
     const { title } = useParams();
-    const [shows, setShows] = useState(undefined)
-
+    const [shows, setShows] = useState(undefined);
+    const [error, setError] = useState();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -15,22 +17,33 @@ export default function Search() {
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-                setShows(data.results);
-                
+                if (data.results) setShows(data.results);
+                else setError("An error occurred");
             } catch (error) {
+                setError(error);
                 console.log(error);
             }
+            setLoading(false);
         };
+        setLoading(true);
         fetchData();
     }, [title]);
-    
-    // console.log(shows);
-    
-    if (!shows) return <div>loading...</div>
+
+    if (!shows || error) return <div>{error}</div>;
+
+    if (loading) return <Loading />;
 
     return (
-        <div>
-            {shows.map((show) => <ShowCard key={show.id} title={show.title || show.name} imgUrl={show.poster_path} id={show.id} type={show.title ? "movie" : "tv"}/>)}
-        </div>
-    )
+        <Container>
+            <ShowList shows={shows} />
+        </Container>
+    );
 }
+
+const Container = styled.div`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding: 5rem 2rem 1rem 2rem;
+`;
